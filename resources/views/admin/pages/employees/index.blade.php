@@ -13,6 +13,71 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
+                            <h5 class="m-0">Search</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="form-search">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>From</label>
+                                            <input type="date" name="from" id="from" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>To</label>
+                                            <input type="date" name="to" id="to" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="email" name="email" id="email" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>First Name</label>
+                                            <input type="text" name="first_name" id="first_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Last Name</label>
+                                            <input type="text" name="last_name" id="last_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Company</label>
+                                            <select name="company" id="company" class="form-control">
+                                                <option value=""></option>
+                                                @foreach(\App\Companies::get_field(['id','name']) as $item)
+                                                    <option value="{{$item->id}}">{{$item->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group float-right">
+                                            <button class="btn btn-primary">Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
                             <h5 class="m-0">Employees</h5>
                             <a href="{{route('employees.create')}}" class="btn btn-primary float-right">Add New Employee</a>
                         </div>
@@ -195,5 +260,27 @@
         function hideLogo() {
             document.getElementById("logo").style.display = "none";
         }
+
+        $("#form-search").on('submit', function (e) {
+            $('#datatable').DataTable().destroy();
+            $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    'url': '{{url('admin/get/employees/search')}}' + '?from=' + $('#from').val() + '&to=' + $('#to').val() + '&email=' + $('#email').val() + '&first_name=' + $('#first_name').val() + '&last_name=' + $('#last_name').val() + '&company=' + $('#company').val(),
+                    'type': 'get'
+                },
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'fullName', name: 'fullName' },
+                    { data: 'company', name: 'company' },
+                    { data: 'email', name: 'email' },
+                    { data: 'phone', name: 'phone' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false },
+                ]
+            });
+
+            e.preventDefault();
+        });
     </script>
 @endsection

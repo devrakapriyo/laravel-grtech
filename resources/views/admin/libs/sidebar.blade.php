@@ -55,6 +55,12 @@
                                 <p>Employees</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{route('daily-quotes')}}" class="nav-link @yield('daily-quotes')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Daily Quotes</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item">

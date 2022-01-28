@@ -29,4 +29,10 @@ Route::group(['middleware'=>'admin','prefix'=>'admin'], function(){
 
     Route::get('get/companies', 'CompaniesController@get_companies')->name('get.companies');
     Route::get('get/employees', 'EmployeesController@get_employees')->name('get.employees');
+    Route::get('get/employees/search', 'EmployeesController@get_employees_search');
+});
+
+Route::prefix('admin')->group(function () {
+    Route::get('daily-quotes', 'DialyQuotesController@index')->name('daily-quotes');
+    Route::get('get/daily-quotes', 'DialyQuotesController@get_daily_quotes');
 });

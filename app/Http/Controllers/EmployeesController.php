@@ -15,6 +15,34 @@ class EmployeesController extends Controller
     public function get_employees()
     {
         $data = Employees::orderBy('id', 'desc');
+        return $this->datatable_employees($data);
+    }
+
+    public function get_employees_search(Request $request)
+    {
+        $query = Employees::select('*');
+        $query->when($request->from && $request->to, function ($q) use ($request) {
+            return $q->whereBetween('created_at', [$request->from." 00:00:00", $request->to." 23:59:59"]);
+        });
+        $query->when($request->email, function ($q) use ($request) {
+            return $q->where('email', $request->email);
+        });
+        $query->when($request->first_name, function ($q) use ($request) {
+            return $q->where('first_name', 'like', '%'.$request->first_name.'%');
+        });
+        $query->when($request->last_name, function ($q) use ($request) {
+            return $q->where('last_name', 'like', '%'.$request->last_name.'%');
+        });
+        $query->when($request->company, function ($q) use ($request) {
+            return $q->where('company', $request->company);
+        });
+
+        $data = $query->orderBy('id', 'desc');
+        return $this->datatable_employees($data);
+    }
+
+    public function datatable_employees($data)
+    {
         return DataTables::of($data)
             ->editColumn('fullName', function($data) {
                 return "{$data->fullName}";
